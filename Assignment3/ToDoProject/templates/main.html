@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+{% block title %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<script src="https://cdn.ckeditor.com/4.16.0/standard-all/ckeditor.js"></script>
+<body>
+{% if user.is_authenticated %}
+    <form>
+    <div class="home">
+       <table  class="table">
+           <tr>
+               <td><p>Profile: </p>{{ user }} <br><br><br><br> </td>
+           </tr>{% if users %}
+           {% for user in users%}
+           <tr>
+               <td><button type="submit" formaction="{% url 'superuser_home' username=user.username pk=user.id %}" class="btn-btn-primary">
+                   {{ user.username }}
+<!--                   {% if request.user.is_superuser %}-->
+<!--                        {% if tasks %} {{ users.tasks.count }} {% endif %}-->
+<!--                   {% endif %}-->
+               </button></td>
+           </tr>
+           {% endfor%}
+               {% endif %}
+           <tr>
+               <td><button type="submit" formaction="{% url 'home' %}" class="btn-btn-primary">Todo List</button></td>
+
+           </tr>
+           <tr>
+               <td style="border-bottom:none"><button type="submit" formaction="{% url 'trash' %}" class="btn-btn-primary">Trash</button></td>
+           </tr>
+           <tr>
+               <td>
+                   {% if last_task %}
+                   <br><br> Recently added task:<br> <a href="{% url 'task' last_task.pk %}"> {{ last_task.title }} </a>
+                   {% endif %}
+               </td>
+           </tr>
+           <tr>
+               <td>
+                   <button formaction="{% url 'logout-page' %}" class="btn-btn-primary">LOGOUT</button>
+               </td>
+           </tr>
+       </table>
+    </div>
+    </form>
+{% endif %}
+{% endblock %}
+{% block content %}
+
+{% endblock %}
+</body>
+</html>

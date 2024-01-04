@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+{% load static %}
+<script src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+  <form method="post" action="{% url 'update-task' task.pk %}">
+    {% csrf_token %}
+    <div class="contact-us">
+        {{ form.as_p }}
+        <table class="table">
+            <tr>
+              <td><button type="button" onclick="window.location.href = '{% url 'home' %}'" class="btn-btn-primary">BACK</button></td>
+              <td><button type="submit">UPDATE TASK</button></td>
+            </tr>
+        </table>
+    </div>
+  </form>
+
+{% endblock %}
+

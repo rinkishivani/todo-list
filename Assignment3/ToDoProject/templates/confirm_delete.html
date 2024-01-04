@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<form method="post" action="{% url 'soft-delete' task.pk %}">
+  {% csrf_token %}
+      <div class="contact-us">
+          <table class="table">
+            <thead class="thead-inverse">
+              <tr>
+                <th colspan="2">Are you sure you want to delete "{{ task.title }}"?</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><button type="submit">Confirm</button></td>
+                    <td><button type="submit" formaction="{% url 'home' %}" class="btn-btn-primary">Cancel</button></td>
+                </tr>
+            </tbody>
+          </table>
+      </div>
+  </>
+{% endblock %}
+
+
+

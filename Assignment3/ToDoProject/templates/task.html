@@ -1,0 +1,31 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<script src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+<!--<div class="home">-->
+<!--   <table class="table">-->
+<!--       <tr>-->
+<!--           <td><button type="submit" onclick="window.location.href= '{% url 'home' %}'" class="btn-btn-primary">Todo List</button></td>-->
+<!--       </tr><tr>-->
+<!--           <td style="border-bottom:none"><button type="submit" onclick="window.location.href = '{% url 'trash' %}'" class="btn-btn-primary">Trash</button></td>-->
+<!--       </tr>-->
+<!--   </table>-->
+<!--</div>-->
+<div class="contact-us">
+    <h1>{{ task.title }}</h1>
+    <textarea name="details" id="task_details" value="{{ task.details }}" disabled >{{ task.details }}</textarea>
+    <table class="table">
+       <tr>
+           {% if task.document %}
+           <td><br>Document: <a href="{{ task.document.url }}">{{ task.document.url | cut:'media/documents/' }}</a></td>
+           {% endif %}
+       </tr>
+   </table>
+    <script>
+      CKEDITOR.replace(task_details)
+    </script>
+
+</div>
+{% endblock %}
+

@@ -1,0 +1,55 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+<!--<ul>-->
+<!--  <li><a class="active" href="#home">Home</a></li>-->
+<!--  <li><a href="#news">News</a></li>-->
+<!--  <li><a href="#contact">Contact</a></li>-->
+<!--  <li><a href="#about">About</a></li>-->
+<!--</ul>-->
+ <form>
+  {% csrf_token %}
+      <div class="contact-us">
+          {% if not tasks %}
+               <table class="table">
+                <thead class="thead-inverse">
+                  <tr>
+                    <th colspan="2">Trash is empty</th>
+                  </tr>
+                </thead>
+              </table>
+          {% else %}
+              <table class="table">
+                <thead class="thead-inverse">
+                  <tr>
+                    <th colspan="4">TRASH</th>
+                      <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for task in tasks %}
+                    <tr>
+                        <td colspan="2">{{ task.title }}</td>
+                        <td>
+                            <button type="submit" formaction="{% url 'restore' task.pk %}" class="btn-btn-primary">restore</button></td>
+                        <td>
+                            <button type="submit" formaction="{% url 'delete' task.pk %}" class="btn-btn-primary">delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>{% if messages %}
+                              <div>
+                                <p>{{ message }}</p><br>
+                              </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+          {% endif %}
+      </div>
+  </form>
+
+{% endblock %}

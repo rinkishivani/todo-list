@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block content %}
+<body>
+<div class="contact-us">
+  <form method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+    {% if messages %}
+      <div>
+        <p>{{ message }}</p><br>
+      </div>
+    {% endif %}
+    <input name = "username"  placeholder="Username" type="text" />
+    <input name="password" placeholder="Password" type="password" />
+    <button type="submit">LOGIN</button>
+    <br>
+    <p> Don't haven an account? <a href="{% url 'register' %}">Register</a> </p>
+  </form>
+</div>
+</body>
+{% endblock %}

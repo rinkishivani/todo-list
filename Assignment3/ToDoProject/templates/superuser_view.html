@@ -1,0 +1,69 @@
+<!--{% extends 'main.html' %}-->
+
+<!--{% load static %}-->
+
+<!--{% block content %}-->
+<!--  <form>-->
+<!--  {% csrf_token %}-->
+
+<!--      <div class="contact-us">-->
+<!--          <table class="table" >-->
+<!--            <thead class="thead-inverse">-->
+<!--              <tr>-->
+<!--                {% for user in users %}-->
+<!--                <th rowspan="2" style="width:70%">{{ user }}</th>-->
+<!--                {% endif %}-->
+<!--              </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            {% if not tasks %}-->
+<!--            <tr>-->
+<!--                <th colspan="2">{{}} has no Task</th>-->
+<!--            </tr>-->
+<!--            {% else %}-->
+<!--              {% for task in tasks %}-->
+<!--                <tr>-->
+<!--                    <td><a href="{% url 'task' task.pk %}"> {{ task.title }} </a><br>-->
+<!--                        <p>{{ task.date }}</p></td>-->
+<!--                    <td>-->
+<!--                        <button type="submit" formaction="{% url 'update-task' task.pk %}" class="btn-btn-primary">update</button></td>-->
+<!--                    <td style="padding:5px">-->
+<!--                        <a href="{% url 'soft-delete' task.pk %}">-->
+<!--                            <img src="{% static 'images/delete-icon.png' %}" height="40px">-->
+<!--                        </a></td>-->
+<!--                    </tr>-->
+<!--              {% endfor %}-->
+<!--            {% endif %}-->
+
+<!--&lt;!&ndash; pagination&ndash;&gt;-->
+<!--            <tr>-->
+<!--                <td><br><br>{% if tasks.has_other_pages %}-->
+<!--          <ul class="pagination">-->
+<!--            {% if tasks.has_previous %}-->
+<!--              <li><a href="?page={{ tasks.previous_page_number }}">&laquo;</a></li>-->
+<!--            {% else %}-->
+<!--              <li class="disabled"><span>&laquo;</span></li>-->
+<!--            {% endif %}-->
+<!--            {% for i in tasks.paginator.page_range %}-->
+<!--              {% if tasks.number == i %}-->
+<!--                <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>-->
+<!--              {% else %}-->
+<!--                <li><a href="?page={{ i }}">{{ i }}</a></li>-->
+<!--              {% endif %}-->
+<!--            {% endfor %}-->
+<!--            {% if tasks.has_next %}-->
+<!--              <li><a href="?page={{ tasks.next_page_number }}">&raquo;</a></li>-->
+<!--            {% else %}-->
+<!--              <li class="disabled"><span>&raquo;</span></li>-->
+<!--            {% endif %}-->
+<!--          </ul>-->
+<!--        {% endif %}-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--          </table>-->
+
+
+<!--      </div>-->
+<!--  </form>-->
+<!--{% endblock %}-->

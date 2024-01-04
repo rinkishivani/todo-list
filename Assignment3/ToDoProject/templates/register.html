@@ -1,0 +1,26 @@
+{% load static %}
+
+{% block content %}
+<body>
+<div class="contact-us">
+  <form method="POST" action="{% url 'register' %}">
+    {% csrf_token %}
+        {% if messages %}
+  {% for message in messages %}
+    <div>
+      <p>{{ message }}</p><br>
+    </div>
+  {% endfor %}
+{% endif %}
+    <input name="fname" placeholder="First Name" required="" type="text" />
+    <input name="lname" placeholder="Last Name" required="" type="text" />
+    <input name="uname" placeholder="Username" required="" type="text" />
+    <input name="password" placeholder="Password" type="password" />
+    <input name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Phone" type="tel" />
+    <button type="submit">SIGN UP</button>
+    <br>
+    <p> Already have an account? <a href="{% url 'login' %}">Login</a> </p>
+  </form>
+</div>
+</body>
+{% endblock %}
