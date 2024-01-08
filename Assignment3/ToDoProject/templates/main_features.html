@@ -1,0 +1,25 @@
+{% load static %}
+{% if user.is_authenticated %}
+    <form>
+    <div>
+       <table class="table">
+           <tr>
+               <td><button type="submit" formaction="{% url 'home' %}" class="btn-btn-primary">Todo List</button></td>
+
+               <td style="border-bottom:none"><button type="submit" formaction="{% url 'trash' %}" class="btn-btn-primary">Trash</button></td>
+               <td>
+                   {% if last_task %}
+                   <br><br> Recently added task:<br> <a href="{% url 'task' last_task.pk %}"> {{ last_task.title }} </a>
+                   {% endif %}
+               </td>
+               <td style="padding:5px">
+<!--                   <button formaction="{% url 'logout-page' %}" class="btn-btn-primary">LOGOUT</button>-->
+                    <a href="{% url 'logout-page' %}">
+                        <img src="{% static 'images/logout.png' %}" height="40px">
+                    </a>
+               </td>
+           </tr>
+       </table>
+    </div>
+    </form>
+{% endif %}

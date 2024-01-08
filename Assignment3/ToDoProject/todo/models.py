@@ -23,6 +23,9 @@ class ToDoList(models.Model):
     document = models.FileField(upload_to='documents/', null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
+    class Meta:
+        ordering = ['-date']
+
 
 class TodoWorkerThrough(models.Model):
     todo = models.ForeignKey(ToDoList, on_delete=models.CASCADE)

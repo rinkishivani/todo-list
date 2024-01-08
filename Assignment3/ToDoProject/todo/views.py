@@ -1,6 +1,5 @@
 import logging
 
-from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView
 from .models import ToDoList
@@ -13,10 +12,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.messages.storage import default_storage
-
+from allauth.account.forms import AddEmailForm
+from allauth.account.decorators import verified_email_required
 
 def login_page(request):
-
     redirect('/ToDoList/login/')
     request._messages = default_storage(request)
     if request.method == "POST":
@@ -76,15 +75,27 @@ def superuser_decorator(original_function):
         if request.user.is_superuser:
             tasks = ToDoList.objects.filter(deleted=False)
             users = User.objects.all()
-            return render(request, 'home.html', {'tasks': tasks, 'users': users, 'username': username, 'pk': pk})
+            page = request.GET.get('page', 1)
+            task_paginator = Paginator(tasks, 3)
+            try:
+                page_no = task_paginator.page(page)
+            except PageNotAnInteger:
+                page_no = task_paginator.page(1)
+            except EmptyPage:
+                page_no = task_paginator.page(task_paginator.num_pages)
+            return render(request, 'home.html', {'tasks': tasks, 'users': users, 'page_no': page_no,
+                                                 'username': username, 'pk': pk})
         return render(request, 'home.html')
+
     return superuser_view
 
 
 @login_required(login_url="/ToDoList/login")
+@verified_email_required
 @superuser_decorator
 def home(request):
     tasks_list = ToDoList.objects.filter(deleted=False, created_by=request.user)
+    user_id = request.session.get('user_id', None)
     if tasks_list:
         last_task = tasks_list[0]
     else:
@@ -97,12 +108,15 @@ def home(request):
         page_no = task_paginator.page(1)
     except EmptyPage:
         page_no = task_paginator.page(task_paginator.num_pages)
-    return render(request, 'home.html', {'tasks': tasks_list, 'last_task': last_task, 'page_no': page_no})
+
+    return render(request, 'home.html', {'tasks': tasks_list, 'last_task': last_task,
+                                         'page_no': page_no, 'user_id': user_id})
 
 
 @login_required(login_url="/ToDoList/login")
 def superuser_home(request, username, pk):
     tasks_list = ToDoList.objects.filter(deleted=False, created_by=pk)
+    users = User.objects.all()
     username = username.title()
     last_task = ''
     if tasks_list:
@@ -116,7 +130,8 @@ def superuser_home(request, username, pk):
     except EmptyPage:
         page_no = task_paginator.page(task_paginator.num_pages)
     return render(request, 'home.html',
-                  {'tasks': tasks_list, 'last_task': last_task, 'page_no': page_no, 'username': username})
+                  {'tasks': tasks_list, 'last_task': last_task, 'page_no': page_no,
+                   'username': username, 'users': users})
 
 
 @login_required(login_url="/ToDoList/login")
@@ -134,7 +149,7 @@ def create(request):
             todo_instance = form.save(commit=False)
             todo_instance.created_by = request.user
             todo_instance.save()
-            return render(request, 'home.html', {'form': form})
+            return redirect('home')
     else:
         form = ToDoListForm()
     return render(request, 'create_task.html', {'form': form})
@@ -174,23 +189,39 @@ def soft_delete(request, pk):
 
 @login_required(login_url="/ToDoList/login")
 def trash(request):
-    tasks = ToDoList.objects.filter(deleted=True,  created_by=request.user)
+    tasks = ToDoList.objects.filter(deleted=True, created_by=request.user)
     return render(request, 'trash.html', {'tasks': tasks})
 
 
 @login_required(login_url="/ToDoList/login")
 def restore(request, pk):
     task = get_object_or_404(ToDoList, id=pk)
+    users = User.objects.all()
     task.deleted = False
     task.save()
     messages.success(request, "Restored")
-    return redirect('/ToDoList/home')
+    return redirect('/ToDoList/home', {'users': users})
 
 
 @login_required(login_url="/ToDoList/login")
 def task(request, pk):
     tasks = ToDoList.objects.get(id=pk)
-    return render(request, 'task.html', {'task': tasks})
+    users = User.objects.all()
+    return render(request, 'task.html', {'task': tasks, 'users': users})
 
 
+# def orm(reqstr(tasks.query), User.objects.exclude(id__lt=5)]
+    #     q2 = User.object.filter(Q(first_name__startswith='R'))|User.objects.filter(last_name__startswith='D'))
+    # q3 =User.objects.exclude(id__lt=5)
+    # for q in query:
+    #
+    # return HttpResponse('orm_practice.html')
 
+# def display_request_meta(request):
+#     # Access various meta information from the request
+#     user_agent = request.META.get('HTTP_USER_AGENT', 'Unknown User Agent')
+#     remote_address = request.META.get('REMOTE_ADDR', 'Unknown Remote Address')
+#
+#     # Build a response with the meta information
+#     response_content = f"User Agent: {user_agent}\nRemote Address: {remote_address}"
+#     return HttpResponse(response_content, content_type="text/plain")

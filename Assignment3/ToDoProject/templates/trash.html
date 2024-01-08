@@ -3,15 +3,10 @@
 {% load static %}
 
 {% block content %}
-<!--<ul>-->
-<!--  <li><a class="active" href="#home">Home</a></li>-->
-<!--  <li><a href="#news">News</a></li>-->
-<!--  <li><a href="#contact">Contact</a></li>-->
-<!--  <li><a href="#about">About</a></li>-->
-<!--</ul>-->
  <form>
   {% csrf_token %}
       <div class="contact-us">
+          {% include 'main_features.html' %}
           {% if not tasks %}
                <table class="table">
                 <thead class="thead-inverse">
@@ -24,8 +19,19 @@
               <table class="table">
                 <thead class="thead-inverse">
                   <tr>
-                    <th colspan="4">TRASH</th>
-                      <th></th>
+                    <th colspan="2" style="width:70%">
+                    {% if request.user.is_superuser %}
+                        {% if username is not None %}
+                        {{ username }}'s
+                        {% else %}
+                        Everyone's
+                        {% endif %}
+                    {% else %}
+                    {{ request.user }}'s
+                    {% endif %}
+                    Deleted task ({{ tasks.count }})</th>
+                <th><button type="submit" formaction="{% url 'create-task' %}" class="btn-btn-primary">+</button></th>
+
                   </tr>
                 </thead>
                 <tbody>

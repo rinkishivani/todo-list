@@ -5,20 +5,22 @@
 {% block content %}
   <form>
   {% csrf_token %}
-
-<!--    <div class="user-nav">-->
-<!--      <p> {{ request.user }} </p>-->
-<!--    </div>-->
-
       <div class="contact-us">
-          <table class="table" >
+          {% include 'main_features.html' %}
+          <table class="table">
             <thead class="thead-inverse">
               <tr>
                 <th colspan="2" style="width:70%">
-                    {% if username is not None %}
-                    {{ username }}
+                    {% if request.user.is_superuser %}
+                        {% if username is not None %}
+                        {{ username }}'s
+                        {% else %}
+                        Everyone's
+                        {% endif %}
+                    {% else %}
+                    {{ request.user }}'s
                     {% endif %}
-                    Todo List ({{ tasks.count }})</th>
+                    Todo Tasks ({{ tasks.count }})</th>
                 <th><button type="submit" formaction="{% url 'create-task' %}" class="btn-btn-primary">+</button></th>
               </tr>
             </thead>
@@ -31,8 +33,15 @@
             <tr><td>  </td></tr>
               {% for task in tasks %}
                 <tr>
-                    <td> {{ task.created_by }} </td>
-                    <td><a href="{% url 'task' task.pk %}"> {{ task.title }} </a><br>
+                    {% if request.user.is_superuser %}<td> {{ task.created_by }} </td>{% endif %}
+                    <td>
+                        <a href="{% url 'task' task.pk %}">
+                          {% if task.progress == 'completed' %}
+                            <s>{{ task.title }}</s>
+                          {% else %}
+                            {{ task.title }}
+                          {% endif %}
+                        </a><br>
                         <p>{{ task.date }}</p></td>
                     <td>
                         <button type="submit" formaction="{% url 'update-task' task.pk %}" class="btn-btn-primary">update</button></td>
@@ -49,7 +58,7 @@
                 <td><br><br>{% if page_no.has_other_pages %}
           <ul class="pagination">
             {% if page_no.has_previous %}
-              <li><a href="page={{ page_no.previous_page_number }}">&laquo;</a></li>
+              <li><a href="?page={{ page_no.previous_page_number }}">&laquo;</a></li>
             {% else %}
               <li class="disabled"><span>&laquo;</span></li>
             {% endif %}
@@ -61,7 +70,7 @@
               {% endif %}
             {% endfor %}
             {% if page_no.has_next %}
-              <li><a href="page={{ page_no.next_page_number }}">&raquo;</a></li>
+              <li><a href="?page={{ page_no.next_page_number }}">&raquo;</a></li>
             {% else %}
               <li class="disabled"><span>&raquo;</span></li>
             {% endif %}

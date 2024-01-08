@@ -17,5 +17,7 @@ urlpatterns = [
     path("login/", views.login_page, name="login"),
     path("register/", views.register, name="register"),
     path("logout/", views.logout_page, name="logout-page"),
+    # path("orm/", views.orm, name="query"),
+    # path('display-meta/', views.display_request_meta, name='display_request_meta'),
     # path('home/<int:pk>', views.delete, name="delete"),
 ]
